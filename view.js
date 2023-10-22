@@ -1,8 +1,32 @@
 // ---- Define your dialogs  and panels here ----
-
-
+let effectivePermissionsPanel = define_new_effective_permissions("effective_permissions", true, null);
+let userSelector = define_new_user_select_field('user_selector', 'Select User', function(selected_user){$('#effective_permissions').attr('username', selected_user)});
+let dialog = define_new_dialog('dialog','Dialog Title');
 
 // ---- Display file structure ----
+$('#sidepanel').append(effectivePermissionsPanel);
+$('#effective_permissions').attr('filepath', '/C/presentation_documents/important_file.txt');
+
+$('#sidepanel').append(userSelector);
+
+$('.perm_info').click(function(){
+    dialog.dialog('open');
+
+    let filepath = $('#effective_permissions').attr('filepath');
+    let username = $('#effective_permissions').attr('username');
+    let permissionName = $(this).attr('permission_name');
+
+    let fileObject = path_to_file[filepath];
+    let userObject = all_users[username];
+
+    // console.log(path_to_file);
+
+    let explainWhy = allow_user_action(fileObject, userObject, permissionName, true);
+    let explainWhyText = get_explanation_text(explainWhy);
+    
+    $('#dialog').text(explainWhyText);
+
+})
 
 // (recursively) makes and returns an html element (wrapped in a jquery object) for a given file object
 function make_file_element(file_obj) {
@@ -72,3 +96,4 @@ $('.permbutton').click( function( e ) {
 
 // ---- Assign unique ids to everything that doesn't have an ID ----
 $('#html-loc').find('*').uniqueId() 
+
